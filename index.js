@@ -23,6 +23,7 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
     db = client.db("shoeCollection");
+    const userCollection = db.collection('users')
     app.post("/shoes", async (req, res) => {
       try {
         const shoeData = req.body;
@@ -44,21 +45,31 @@ async function run() {
       }
     })
     app.get("/display/shoes/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-console.log(id)
-    const product = await db.collection("shoes").findOne({ _id: new ObjectId(id) });
+      try {
+        const { id } = req.params;
+        console.log(id)
+        const product = await db.collection("shoes").findOne({ _id: new ObjectId(id) });
 
-    if (!product) {
-      return res.status(404).json({ message: "Product not found" });
-    }
+        if (!product) {
+          return res.status(404).json({ message: "Product not found" });
+        }
 
-    res.status(200).json({ success: true, data: product });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: "Server Error" });
-  }
-});
+        res.status(200).json({ success: true, data: product });
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: "Server Error" });
+      }
+    });
+    app.post('/users', async (req, res) => {
+      try {
+        const shoeData = req.body;
+        const result = await userCollection.insertOne(shoeData);
+        res.status(201).json({ message: "Shoe added successfully", data: result });
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to add shoe" });
+      }
+    })
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
