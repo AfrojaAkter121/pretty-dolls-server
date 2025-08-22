@@ -23,17 +23,26 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     db = client.db("shoeCollection");
-    app.post("/api/shoes", async (req, res) => {
-  try {
-    const shoeData = req.body;
+    app.post("/shoes", async (req, res) => {
+      try {
+        const shoeData = req.body;
 
-    const result = await db.collection("shoes").insertOne(shoeData);
-    res.status(201).json({ message: "Shoe added successfully", data: result });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to add shoe" });
-  }
-});
+        const result = await db.collection("shoes").insertOne(shoeData);
+        res.status(201).json({ message: "Shoe added successfully", data: result });
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to add shoe" });
+      }
+    });
+    app.get("/display/shoes", async (req, res) => {
+      try {
+        const shoes = await db.collection("shoes").find({}).toArray();
+        res.status(200).json({ data: shoes });
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to fetch shoes" });
+      }
+    })
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
