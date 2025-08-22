@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 // Load environment variables
 dotenv.config();
 
@@ -43,7 +43,22 @@ async function run() {
         res.status(500).json({ error: "Failed to fetch shoes" });
       }
     })
-    
+    app.get("/display/shoes/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+console.log(id)
+    const product = await db.collection("shoes").findOne({ _id: new ObjectId(id) });
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.status(200).json({ success: true, data: product });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+});
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
