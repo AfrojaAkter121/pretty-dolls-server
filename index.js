@@ -70,6 +70,24 @@ async function run() {
         res.status(500).json({ error: "Failed to add shoe" });
       }
     })
+    // Get user by email
+app.get("/users/:email", async (req, res) => {
+  try {
+    const { email } = req.params; // extract email from URL
+    console.log("Searching for user by email:", email);
+
+    // Find one user (since emails are usually unique)
+    const user = await userCollection.findOne({ email });
+
+
+    res.status(200).json({ success: true, data: user });
+  } catch (err) {
+    console.error("Error fetching user:", err);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+});
+
+
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
