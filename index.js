@@ -7,7 +7,8 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ylneatr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.sys040z.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -21,7 +22,7 @@ app.use(express.json());  // Parse JSON request body
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    // await client.connect();
+    await client.connect();
     db = client.db("shoeCollection");
     const userCollection = db.collection('users')
     app.post("/shoes", async (req, res) => {
@@ -62,14 +63,15 @@ async function run() {
     });
     app.post('/users', async (req, res) => {
       try {
-        const shoeData = req.body;
-        const result = await userCollection.insertOne(shoeData);
-        res.status(201).json({ message: "Shoe added successfully", data: result });
+        const userData = req.body; // userData নামে নেওয়া হয়েছে
+        const result = await userCollection.insertOne(userData);
+        res.status(201).json({ message: "User added successfully", data: result });
       } catch (err) {
         console.error(err);
-        res.status(500).json({ error: "Failed to add shoe" });
+        res.status(500).json({ error: "Failed to add user" });
       }
-    })
+    });
+    
     // Get user by email
 app.get("/users/:email", async (req, res) => {
   try {
