@@ -26,6 +26,7 @@ async function run() {
     db = client.db("shoeCollection");
     const userCollection = db.collection('users')
     app.post("/shoes", async (req, res) => {
+
       try {
         const shoeData = req.body;
 
@@ -36,6 +37,8 @@ async function run() {
         res.status(500).json({ error: "Failed to add shoe" });
       }
     });
+
+
     app.get("/display/shoes", async (req, res) => {
       try {
         const shoes = await db.collection("shoes").find({}).toArray();
